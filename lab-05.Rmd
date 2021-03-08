@@ -3,17 +3,12 @@ title: "Lab 05 - Nobel laureates"
 output: github_document
   
 ---
-Team Name:
+Team Name:DS5
 
 Team Members - Name and Student ID
 
-1.
+1. Maram hajeer 2201002853
 
-2.
-
-3.
-
-4.
 
 
 
@@ -41,6 +36,9 @@ nobel <- read_csv("data/nobel.csv")
 ## Get to know your data
 
 1.  How many observations and how many variables are in the dataset? Use inline code to answer this question. What does each row represent?
+represent?
+observation:953
+variables:26
 
 
 ```{r}
@@ -77,12 +75,18 @@ nrow(nobel_living)
 Get the code from the Lab document
 
 ```{r}
-
+nobel_living <- nobel_living %>%
+mutate(
+country_us = if_else(country == "USA", "USA", "Other")
+)
 ```
 
 Next, we will limit our analysis to only the following categories: Physics, Medicine, Chemistry, and Economics.
 
 ```{r}
+nobel_living_science <- nobel_living %>%
+filter(category %in% c("Physics","Medicine", "Chemistry",
+"Economics"))
 
 ```
 
@@ -100,6 +104,10 @@ Knit, *commit, and push your changes to GitHub with an appropriate commit messag
 ## But of those US-based Nobel laureates, many were born in other countries
 
 ```{r}
+nobel_living_science %>%
+ggplot(aes(x = country_us,y =category, fill = category)) +
+geom_bar(stat = "identity", position = "dodge",
+orientation = "horizontal")
 
 ```
 
@@ -124,6 +132,10 @@ Knit, *commit, and push your changes to GitHub with an appropriate commit messag
     
 
 ```{r}
+nobel_living_science <- nobel_living_science %>% mutate(
+born_country_us = if_else(born_country == "USA","USA","Other"))
+ nobel_living_science %>%ggplot(aes(x = country_us,y=born_country_us, fill = category)) + geom_bar(stat = "identity", position = "dodge",
+orientation = "horizontal")
 
 ```
 
@@ -135,8 +147,13 @@ Knit, *commit, and push your changes to GitHub with an appropriate commit messag
 
 
 ```{r}
+nobel_living_science %>%
+filter(born_country_us=="other",country_us=="USA")%>%count("born_country")%>%
+arrange(desc(n))
 
 ```
+
+Germany and United Kingdom
 
 Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards and review the md document on GitHub to make sure you're happy with the final state of your work.*
 
